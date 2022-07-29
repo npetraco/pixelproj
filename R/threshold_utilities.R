@@ -1,0 +1,50 @@
+#' XXXXXX
+#'
+#' XXXX
+#'
+#' The function depends on the Rvision library which must be installed
+#'
+#' @param XX The XX
+#' @return The function will XX
+#'
+#'
+#' @export
+thresh.img.obj <- function(img.obj, scale.factor=255) {
+
+  if(class(img.obj) == "magick-image"){ # See if it's a stack otherwise assume 1 image
+    #print("GIF image stack")
+
+    num.imgs <- length(img.obj)
+    #print(num.imgs)
+
+    img.list <- rep(list(NULL), num.imgs)
+    for(i in 1:num.imgs) {
+      img.list[[i]] <- as.integer(dat[i][[1]])[,,1] # All three channels should be the same
+    }
+
+  } else { # Expand this later if we use different image types
+
+    if(class(img.obj) != "Rcpp_Image"){
+      stop("Single images must be in Rvision format!")
+    }
+
+    num.imgs <- 1
+
+    # Assume image is an Rvision object right now:
+    img.list <- list(img.obj[,,1]) # All three channels should be the same
+
+  }
+
+  thresh.val <- mean(unlist(img.list))
+
+  # threshold the image(s) by the threshold value and store in Rvision format
+  for(i in 1:num.imgs) {
+
+    img.tmp       <- zeros(nrow = nrow(img.list[[i]]), ncol = ncol(img.list[[i]]), nchan = 1, bitdepth = "8U")
+    img.tmp[]     <- scale.factor * (img.list[[i]][] > thresh.val)
+    img.list[[i]] <- img.tmp
+
+  }
+
+  return(img.list)
+}
