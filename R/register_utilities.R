@@ -9,7 +9,7 @@
 #'
 #'
 #' @export
-register.template <- function(template.img, reference.img, h.min.overlap=1, w.min.overlap=1, method="SQDIFF", fill.typ="opposite", printQ=F, plotQ=F){
+register.template <- function(template.img, reference.img, h.min.overlap=1, w.min.overlap=1, method="SQDIFF", fill.typ="opposite", return.imgQ = F, printQ=F, plotQ=F){
 
   if(!(method %in% c("CCOEFF", "CCOEFF_NORMED", "CCORR", "CCORR_NORMED", "SQDIFF", "SQDIFF_NORMED"))){
     stop("method must be = CCOEFF, CCOEFF_NORMED, CCORR, CCORR_NORMED, SQDIFF, SQDIFF_NORMED")
@@ -90,7 +90,7 @@ register.template <- function(template.img, reference.img, h.min.overlap=1, w.mi
     # Plot:
     plot(tmpl.in.ref.plot[nrow(tmpl.in.ref.plot):1,], col=c("blue","red","green","orange"), breaks = c(0,1,3,5,7),
          key=NULL)
-    key.info <- cbind(c("blue","red","green","orange"), c("0   reference", "255 reference", "0   template", "255 template"))
+    key.info <- cbind(c("blue","red","green","orange"), c("0   reference black", "255 reference white", "0   template black", "255 template white"))
     colnames(key.info) <- c("color", "pixel")
     print(key.info)
 
@@ -183,6 +183,12 @@ register.template <- function(template.img, reference.img, h.min.overlap=1, w.mi
       tmpl.in.ref.filled <- tmpl.in.ref.filled
     }
 
+  }
+
+  if(return.imgQ==T) {
+    img.tmp   <- zeros(nrow = nrow(tmpl.in.ref.filled), ncol = ncol(tmpl.in.ref.filled), nchan = 1, bitdepth = "8U")
+    img.tmp[] <- tmpl.in.ref.filled
+    tmpl.in.ref.filled <- img.tmp
   }
 
   return(tmpl.in.ref.filled)

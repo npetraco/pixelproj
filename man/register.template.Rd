@@ -11,6 +11,7 @@ register.template(
   w.min.overlap = 1,
   method = "SQDIFF",
   fill.typ = "opposite",
+  return.imgQ = F,
   printQ = F,
   plotQ = F
 )

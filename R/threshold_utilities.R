@@ -19,7 +19,7 @@ thresh.img.obj <- function(img.obj, scale.factor=255) {
 
     img.list <- rep(list(NULL), num.imgs)
     for(i in 1:num.imgs) {
-      img.list[[i]] <- as.integer(dat[i][[1]])[,,1] # All three channels should be the same
+      img.list[[i]] <- as.integer(img.obj[i][[1]])[,,1] # All three channels should be the same
     }
 
   } else { # Expand this later if we use different image types
