@@ -2,7 +2,7 @@
 % Please edit documentation in R/threshold_utilities.R
 \name{thresh.img.obj}
 \alias{thresh.img.obj}
-\title{XXXXXX}
+\title{Threshold an image object (stack or individual image), by it's overall mean}
 \usage{
 thresh.img.obj(img.obj, scale.factor = 255)
 }

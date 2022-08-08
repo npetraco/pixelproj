@@ -1,4 +1,4 @@
-#' XXXXXX
+#' Threshold an image object (stack or individual image), by it's overall mean
 #'
 #' XXXX
 #'
