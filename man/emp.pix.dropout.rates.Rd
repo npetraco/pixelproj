@@ -2,7 +2,7 @@
 % Please edit documentation in R/modeling_utilities.R
 \name{emp.pix.dropout.rates}
 \alias{emp.pix.dropout.rates}
-\title{Utility function for XXXXXX}
+\title{Utility function for computing pixel drop out rates in an array of black and white pixels}
 \usage{
 emp.pix.dropout.rates(img.list)
 }
@@ -13,8 +13,6 @@ emp.pix.dropout.rates(img.list)
 The function will XX
 }
 \description{
-XXXX
-}
-\details{
-The function depends on the Rvision library which must be installed
+The pixel drop out rate is the probability the pixel will be white (255) given that it was
+black (0) at least once in a stack of registered images
 }

@@ -15,8 +15,9 @@ root.pth <- "/Users/karen2/latex/papers/irina/Chen_group_workups/feathering_patt
 #get directory contents
 fnames <- list.files(root.pth)
 
-for(i in 1:length(fnames)) {
-  print(paste0(i, ": ", fnames[i]))
+#for(i in 1:length(fnames)) {
+for(i in 9) {
+  print(paste0("Image ",i, ", filename: ", fnames[i]))
   pth1     <- paste0(root.pth, fnames[i]) # Path to an image in a stack
   stk1     <- thresh.img.obj(image_read(pth1))
   stk1.doi <- emp.pix.dropout.rates(stk1)

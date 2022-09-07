@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_utilities.R
 \name{plot.overlay}
 \alias{plot.overlay}
-\title{XXXXXX}
+\title{Overlay template on reference and systematically shift over it}
 \usage{
 \method{plot}{overlay}(
   template.img,
@@ -25,7 +25,7 @@
 The function will XX
 }
 \description{
-XXXX
+Overlay template on reference and systematically shift over it, plotting the result
 }
 \details{
 The function depends on the Rvision library which must be installed

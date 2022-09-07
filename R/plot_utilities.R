@@ -1,6 +1,6 @@
-#' XXXXXX
+#' Overlay template on reference and systematically shift over it
 #'
-#' XXXX
+#' Overlay template on reference and systematically shift over it, plotting the result
 #'
 #' The function depends on the Rvision library which must be installed
 #'
@@ -69,6 +69,53 @@ plot.overlay <- function(template.img, reference.img, h.min.overlap=1, w.min.ove
 
     if((x == x.max) & (y == y.max)){
       break()
+    }
+
+  }
+
+}
+
+
+#' Plot an image stack
+#'
+#' Plot an image stack by plotting one image after the next
+#'
+#' The function depends on the Rvision library which must be installed
+#'
+#' @param XX The XX
+#' @return The function will XX
+#'
+#'
+#' @export
+plot.stack <- function(img.list, num.cycles=1, type="Rvision", delay=0.5) {
+
+  num.imgs <- length(img.list)
+  for(k in 1:num.cycles) {
+
+    print(paste0("Cycle: ", k))
+
+    for(i in 1:num.imgs){
+
+      if(type == "Rvision") {
+
+        print(paste0("    Image: ",i))
+        plot(img.list[[i]])
+
+      } else if(type == "matrix") {
+
+        plot(img.list[[i]][,,1], key=NULL, main=paste0("Image: ",i))
+
+      } else if(type == "image.matrix") {
+
+        nri <- nrow(img.list[[i]][,,1])
+        plot(img.list[[i]][nri:1,,1], key=NULL, main=paste0("Image: ",i))
+
+      } else {
+        stop("Choose type = Rvision, matrix, image.matrix")
+      }
+
+      Sys.sleep(delay)
+
     }
 
   }
