@@ -1,12 +1,20 @@
 Package: pixelproj
 Type: Package
-Title: What the Package Does (Title Case)
+Title: This package does specific stuff we need to do with black and white pixel arrays
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: We wrote it
+Maintainer: Nick <npetraco@gmail.com>
+Description: This package depnds on a lot of imageprocessing and graph libraries.
+License: ISC License
+    Copyright <YEAR: 2022> <OWNER: Nicholas D. Petraco>
+    Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby 
+    granted, provided that the above copyright notice and this permission notice appear in all copies.
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING 
+    ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, 
+    DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, 
+    WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE 
+    OR PERFORMANCE OF THIS SOFTWARE.
 Encoding: UTF-8
 LazyData: true
+Depends: Rvision (>= 0.1.0), magick (>= 2.7.3), CRF (>= 0.3-16), gRbase (>= 1.8-3), RBGL (>= 1.46.0), igraph (>= 1.0.1), Rgraphviz (>= 2.38.0), plot.matrix (>= 1.6)
 RoxygenNote: 7.1.2

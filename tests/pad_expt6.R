@@ -29,6 +29,8 @@ rqj  <- register.template(tmpl, ref, fill.typ = "255", printQ = T, plotQ = T)
 plot(rqj[nrow(rqj):1,])
 plot(ref[nrow(ref):1,,1])
 
+
+
 dim(ref[nrow(ref):1,,1])
 
 plot.overlay(tmpl, ref, x.max=14, y.max=6)
