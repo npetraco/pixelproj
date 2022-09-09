@@ -4,7 +4,7 @@
 \alias{image.list2vec.mat}
 \title{Convert a list of images to a matrix of row vectors}
 \usage{
-image.list2vec.mat(img.list)
+image.list2vec.mat(img.list, white.pix.val = NULL, black.pix.val = NULL)
 }
 \arguments{
 \item{XX}{The XX}

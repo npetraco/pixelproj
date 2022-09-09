@@ -2,7 +2,7 @@
 % Please edit documentation in R/array_utilities.R
 \name{array2vec}
 \alias{array2vec}
-\title{Convert array to vector in row major order}
+\title{Convert array to binary vector in row major order}
 \usage{
 array2vec(arr.mat)
 }
@@ -13,5 +13,5 @@ array2vec(arr.mat)
 The function will XX
 }
 \description{
-Convert array to vector in row major order
+Convert array to binary vector in row major order
 }

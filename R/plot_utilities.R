@@ -121,3 +121,4 @@ plot.stack <- function(img.list, num.cycles=1, type="Rvision", delay=0.5) {
   }
 
 }
+

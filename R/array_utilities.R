@@ -42,9 +42,9 @@ node.num2idxs <- function(idx, num.row) {
 }
 
 
-#' Convert array to vector in row major order
+#' Convert array to binary vector in row major order
 #'
-#' Convert array to vector in row major order
+#' Convert array to binary vector in row major order
 #'
 #' @param XX The XX
 #' @return The function will XX
@@ -54,7 +54,7 @@ node.num2idxs <- function(idx, num.row) {
 array2vec <- function(arr.mat){
 
   # Flatten pixel pattern and 255s -> 1 for CRF routines
-  arr.vec <- as.numeric(arr.mat == 255) # white = 1, black = 0
+  arr.vec <- as.numeric(arr.mat == 255) # white = 1, black = 0 NOTE: this is now a BINARY vector
 
   return(arr.vec)
 }
@@ -93,14 +93,14 @@ vec2array <- function(arr.vec, num.rows, num.cols, white.pix=1, black.pix=0){
 #'
 #'
 #' @export
-image.list2vec.mat <- function(img.list){
+image.list2vec.mat <- function(img.list, white.pix.val=NULL, black.pix.val=NULL){
 
   num.images <- length(img.list)
   #print(num.images)
   #print(img.list[[1]])
 
-  vec <- array2vec(img.list[[1]][,,1])
-  config.mat <- array(NA, c(num.images, length(vec)))
+  vec            <- array2vec(img.list[[1]][,,1])
+  config.mat     <- array(NA, c(num.images, length(vec)))
   config.mat[1,] <- vec
 
   for(i in 2:num.images){
@@ -109,6 +109,19 @@ image.list2vec.mat <- function(img.list){
 
     config.mat[i,] <- vec
   }
+
+
+  # Change white/black pixel values if requested:
+  # Note: right now black = 0, white = 1 from array2vec
+  config.mat2 <- config.mat          # Make a copy of config.mat in case we want to switch 0s for 1s and 1s for 0s
+  if(!is.null(white.pix.val)) {
+    config.mat2[ which(config.mat == 1, arr.ind = T) ] <- white.pix.val
+  }
+  if(!is.null(black.pix.val)) {
+    config.mat2[ which(config.mat == 0, arr.ind = T) ] <- black.pix.val
+  }
+  config.mat <- config.mat2
+
 
   return(config.mat)
 
