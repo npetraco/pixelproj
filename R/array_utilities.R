@@ -42,19 +42,24 @@ node.num2idxs <- function(idx, num.row) {
 }
 
 
-#' Convert array to binary vector in row major order
+#' Convert array to vector in row major order
 #'
-#' Convert array to binary vector in row major order
+#' Convert array to vector in row major order. If no state names are supplied,
+#' binary vector is returned with "white" pixels = 1 and "black" pixels = 0
 #'
 #' @param XX The XX
 #' @return The function will XX
 #'
 #'
 #' @export
-array2vec <- function(arr.mat){
+array2vec <- function(arr.mat, state.names=NULL){
 
   # Flatten pixel pattern and 255s -> 1 for CRF routines
   arr.vec <- as.numeric(arr.mat == 255) # white = 1, black = 0 NOTE: this is now a BINARY vector
+  if(!is.null(state.names)) {
+    arr.vec[which(arr.vec == 1)] <- state.names[1]
+    arr.vec[which(arr.vec == 0)] <- state.names[2]
+  }
 
   return(arr.vec)
 }

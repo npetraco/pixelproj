@@ -98,3 +98,40 @@ simulate.pix.pattern <- function(img.list, nsims=1){
   return(img.list.sims)
 
 }
+
+
+#' Compute the probability of pattern given theta fit from a set of patterns
+#'
+#' Compute the probability of pattern given a fit and dressed CRF object.
+#' Instead of recomputing Z each time this is call, we just pass in logZ
+#'
+#'
+#'
+#' @param XX The XX
+#' @return The function will XX
+#'
+#'
+#' @export
+prob.pattern <- function(pattern.mat, a.dressed.fit.crf.obj, a.logZ){
+
+  # Convert retangular pattern to a 1,2 vector with 1 = white pixel and 2 = black pixel
+  pattern.vec <- array2vec(pattern.mat, state.names = c(1,2))
+  f0f  <- function(y){ as.numeric(c((y==1),(y==2))) }
+
+
+  pattern.energy <- config.energy(config       = pattern.vec,
+                      edges.mat    = a.dressed.fit.crf.obj$edges,
+                      one.lgp      = a.dressed.fit.crf.obj$node.energies,
+                      two.lgp      = a.dressed.fit.crf.obj$edge.energies, # make sure use same order as edges!
+                      ff           = f0f)
+
+
+  log.pr     <- pattern.energy - logZ # log(Pr(X))
+  pattern.pr <- exp(log.pr)           # Pr(X)
+
+  pr.info <- c(log.pr, pattern.pr)
+  names(pr.info) <- c("log.pr", "pr")
+
+  return(pr.info)
+
+}
