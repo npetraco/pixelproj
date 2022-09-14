@@ -126,8 +126,8 @@ prob.pattern <- function(pattern.mat, a.dressed.fit.crf.obj, a.logZ){
                       ff           = f0f)
 
 
-  log.pr     <- pattern.energy - logZ # log(Pr(X))
-  pattern.pr <- exp(log.pr)           # Pr(X)
+  log.pr     <- pattern.energy - a.logZ # log(Pr(X))
+  pattern.pr <- exp(log.pr)             # Pr(X)
 
   pr.info <- c(log.pr, pattern.pr)
   names(pr.info) <- c("log.pr", "pr")

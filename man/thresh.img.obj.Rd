@@ -4,7 +4,7 @@
 \alias{thresh.img.obj}
 \title{Threshold an image object (stack or individual image), by it's overall mean}
 \usage{
-thresh.img.obj(img.obj, scale.factor = 255)
+thresh.img.obj(img.obj, type = "group.mean", scale.factor = 255)
 }
 \arguments{
 \item{XX}{The XX}

@@ -9,7 +9,7 @@
 #'
 #'
 #' @export
-thresh.img.obj <- function(img.obj, scale.factor=255) {
+thresh.img.obj <- function(img.obj, type="group.mean", scale.factor=255) {
 
   if(class(img.obj) == "magick-image"){ # See if it's a stack otherwise assume 1 image
     #print("GIF image stack")
@@ -35,15 +35,34 @@ thresh.img.obj <- function(img.obj, scale.factor=255) {
 
   }
 
-  thresh.val <- mean(unlist(img.list))
+  # Threshold types:
+  if(type=="group.mean") {
 
-  # threshold the image(s) by the threshold value and store in Rvision format
-  for(i in 1:num.imgs) {
+    thresh.val <- mean(unlist(img.list))
 
-    img.tmp       <- zeros(nrow = nrow(img.list[[i]]), ncol = ncol(img.list[[i]]), nchan = 1, bitdepth = "8U")
-    img.tmp[]     <- scale.factor * (img.list[[i]][] > thresh.val)
-    img.list[[i]] <- img.tmp
+    # threshold the image(s) by the threshold value and store in Rvision format
+    for(i in 1:num.imgs) {
 
+      img.tmp       <- zeros(nrow = nrow(img.list[[i]]), ncol = ncol(img.list[[i]]), nchan = 1, bitdepth = "8U")
+      img.tmp[]     <- scale.factor * (img.list[[i]][] > thresh.val)
+      img.list[[i]] <- img.tmp
+
+    }
+
+  } else if(type=="individual.mean") {
+
+    # threshold the image(s) by the threshold value and store in Rvision format
+    for(i in 1:num.imgs) {
+
+      thresh.val    <- mean(img.list[[i]])
+      img.tmp       <- zeros(nrow = nrow(img.list[[i]]), ncol = ncol(img.list[[i]]), nchan = 1, bitdepth = "8U")
+      img.tmp[]     <- scale.factor * (img.list[[i]][] > thresh.val)
+      img.list[[i]] <- img.tmp
+
+    }
+
+  } else {
+    stop("Choose type = group.mean, individual.mean")
   }
 
   return(img.list)
