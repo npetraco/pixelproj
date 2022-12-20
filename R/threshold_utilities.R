@@ -67,3 +67,23 @@ thresh.img.obj <- function(img.obj, type="group.mean", scale.factor=255) {
 
   return(img.list)
 }
+
+
+#' Mean image of a stack
+#'
+#' Mean image of a stack, thresholded by the scale.factor
+#'
+#' The function depends on the Rvision library which must be installed
+#'
+#' @param XX The XX
+#' @return The function will XX
+#'
+#'
+#' @export
+mean.stack.img <- function(img.list, scale.factor=255) {
+
+  avg.img <- thresh.img.obj( # Threshold to make sure pixel vals are on binary scale
+                             mean(img.list, target="new"), # From Rvision mean.list
+                             type = "individual.mean")
+  return(avg.img)
+}
