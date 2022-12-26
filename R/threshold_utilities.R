@@ -82,8 +82,9 @@ thresh.img.obj <- function(img.obj, type="group.mean", scale.factor=255) {
 #' @export
 mean.stack.img <- function(img.list, scale.factor=255) {
 
+  #tmp.img <- mean(img.list, target="new")
   avg.img <- thresh.img.obj( # Threshold to make sure pixel vals are on binary scale
-                             mean(img.list, target="new"), # From Rvision mean.list
-                             type = "individual.mean")
+                             mean(img.list, target="new"), # cf. mean.list in Rvision
+                             type = "individual.mean")[[1]]
   return(avg.img)
 }

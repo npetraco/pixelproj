@@ -34,13 +34,13 @@ register.template <- function(template.img, reference.img, h.min.overlap=1, w.mi
                                  left   = w.pad.leng,
                                  right  = w.pad.leng,
                                  border_color = "white",
-                                 border_type = "constant",
-                                 target = "new")
+                                 border_type  = "constant",
+                                 target       = "new")
 
-  match.info <- matchTemplate(image = padded.reference.img,
+  match.info <- matchTemplate(image    = padded.reference.img,
                               template = template.img,
-                              target = "new",
-                              method = method)
+                              target   = "new",
+                              method   = method)
 
   mm <- minMaxLoc(match.info)
   if(printQ==T){
