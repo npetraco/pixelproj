@@ -87,7 +87,7 @@ plot.overlay <- function(template.img, reference.img, h.min.overlap=1, w.min.ove
 #'
 #'
 #' @export
-plot.stack <- function(img.list, num.cycles=1, type="Rvision", delay=0.5) {
+plot.stack <- function(img.list, num.cycles=1, type="Rvision", main.title = NULL, delay=0.5) {
 
   num.imgs <- length(img.list)
   for(k in 1:num.cycles) {
@@ -98,17 +98,31 @@ plot.stack <- function(img.list, num.cycles=1, type="Rvision", delay=0.5) {
 
       if(type == "Rvision") {
 
-        print(paste0("    Image: ",i))
+        if(is.null(main.title)){
+          print(paste0("    Image: ",i))
+        } else {
+          print(main.title)
+        }
         plot(img.list[[i]])
 
       } else if(type == "matrix") {
 
-        plot(img.list[[i]][,,1], key=NULL, main=paste0("Image: ",i))
+        if(is.null(main.title)){
+          mtitl.loc <- paste0("    Image: ",i)
+        } else {
+          mtitl.loc <- main.title
+        }
+        plot(img.list[[i]][,,1], key=NULL, main=mtitl.loc)
 
       } else if(type == "image.matrix") {
 
+        if(is.null(main.title)){
+          mtitl.loc <- paste0("    Image: ",i)
+        } else {
+          mtitl.loc <- main.title
+        }
         nri <- nrow(img.list[[i]][,,1])
-        plot(img.list[[i]][nri:1,,1], key=NULL, main=paste0("Image: ",i))
+        plot(img.list[[i]][nri:1,,1], key=NULL, main=mtitl.loc)
 
       } else {
         stop("Choose type = Rvision, matrix, image.matrix")

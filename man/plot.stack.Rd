@@ -4,7 +4,13 @@
 \alias{plot.stack}
 \title{Plot an image stack}
 \usage{
-\method{plot}{stack}(img.list, num.cycles = 1, type = "Rvision", delay = 0.5)
+\method{plot}{stack}(
+  img.list,
+  num.cycles = 1,
+  type = "Rvision",
+  main.title = NULL,
+  delay = 0.5
+)
 }
 \arguments{
 \item{XX}{The XX}
