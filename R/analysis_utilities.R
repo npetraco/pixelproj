@@ -8,13 +8,7 @@
 #' @export
 match.analysis <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, min.prob=0.001, printQ=F, plotQ=F){
 
-
   prob.vec.loc <- as.numeric(prob.vec)
-
-  # Move this below at some point
-  if(plotQ == T) {
-    plot(1:length(an.lbl.names), prob.vec.loc, typ="h", xlab="K", ylab="probability", main="Pr(X|K)")
-  }
 
   # Best match:
   pr.best.match  <- max(prob.vec.loc)                    # Probability for the best match. May not be the true ID
@@ -68,7 +62,14 @@ match.analysis <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, min.p
   #print(mtvec)
   #print(class(mtvec))
 
+  # Plot Pr(X|K) for all K
+  if(plotQ == T) {
+    plot(1:length(an.lbl.names), prob.vec.loc, typ="h", xlab="K", ylab="probability", main="Pr(X|K)")
+    points(true.lbl, pr.true.ID, pch=4) # Mark the correct ID with an x
+  }
+
   if(printQ == T){
+    print(paste0("FP#:                                    ", an.idx ))
     print(paste0("K:                                      ", mtvec[1] ))
     #print(paste0("indicator:                              ", mtvec[6] )) # Should always just be M**** indicating this K is the true match
     print(paste0("true ID of K:                           ", mtvec[2] ))
@@ -99,7 +100,7 @@ match.analysis <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, min.p
 #'
 #'
 #' @export
-check.analysis <- function(a.Q.img.num, a.K.set.num, K.set.fnames, an.fp.info.mat, fp.file.names, reg.fill.typ = "255", path.to.fp.images, path.to.fp.fits, plot.level=0){
+check.analysis <- function(a.Q.img.num, a.K.set.num, K.set.fnames, an.fp.info.mat, fp.file.names, reg.fill.typ = "255", path.to.fp.images, path.to.fp.fits, printQ=F, plotQ=F, plot.level=0){
 
   # Build path to K.set to check against:
   K.pth.chk      <- paste0(path.to.fp.images, K.set.fnames[a.K.set.num])
@@ -109,7 +110,7 @@ check.analysis <- function(a.Q.img.num, a.K.set.num, K.set.fnames, an.fp.info.ma
   K.mean.img.chk <- mean.stack.img(K.stk.chk) # This will be the reference for registration
 
   print(paste0("K Image stack: ", a.K.set.num, ", filename: ", K.set.fnames[a.K.set.num]))
-  if(plot.level >=2) {
+  if(plotQ==T & plot.level >=2) {
 
     # Plot mean of K.set in two ways, side by side
     par(mfrow=c(1,1)) # In case it didn't reset
@@ -129,7 +130,7 @@ check.analysis <- function(a.Q.img.num, a.K.set.num, K.set.fnames, an.fp.info.ma
   Q.stk <- thresh.img.obj(image_read(Q.pth), type = "individual.mean")
   Q.img <- Q.stk[[ an.fp.info.mat[a.Q.img.num, 6] ]] # Select the right rep number
 
-  if(plot.level >=2) {
+  if(plotQ==T & plot.level >=2) {
 
     # Plot mean of K.set in two ways, side by side
     par(mfrow=c(1,1)) # In case it didn't reset
@@ -147,10 +148,10 @@ check.analysis <- function(a.Q.img.num, a.K.set.num, K.set.fnames, an.fp.info.ma
     template.img  = Q.img,          # The specific Q in the stack
     reference.img = K.mean.img.chk, # Take mean image of stack as the reference to align to
     fill.typ      = reg.fill.typ,   # Fill for missing parts: "devils.advocate" (assume missing parts are the same as the reference), "opposite" (assume missing parts the opposite of the reference), "random" (random values for missing parts), "0" (missing parts all black), "255" (missing parts all white)
-    printQ        = T,
-    plotQ         = T)
+    printQ        = printQ,
+    plotQ         = plotQ)
 
-  if(plot.level >=1) {
+  if(plotQ==T & plot.level >=1) {
 
     # Plot mean of K.set in two ways, side by side
     par(mfrow=c(1,1)) # In case it didn't reset
@@ -168,6 +169,23 @@ check.analysis <- function(a.Q.img.num, a.K.set.num, K.set.fnames, an.fp.info.ma
     par(mfrow=c(1,1))
   }
 
+  if(plotQ==T & plot.level == 0) {
+
+    # Plot mean of K.set in two ways, side by side
+    par(mfrow=c(1,1)) # In case it didn't reset
+    par(mfrow=c(2,2))
+
+    # Q before reg side-by-side with K:
+    plot.stack(list(Q.img), num.cycles = 1, delay = 0.1, type = "image.matrix", main.title = paste0("Q before reg: ", Q.img.info.vec[2]))
+    plot.stack(list(K.mean.img.chk), num.cycles = 1, delay = 0.1, type = "image.matrix", main.title = paste0("K (mean): ", K.set.fnames[a.K.set.num]) )
+
+    #invisible(readline(prompt="Press [enter] to continue"))
+
+    # Q after reg side-by-side with K:
+    plot(Q.img.mat.reg[nrow(Q.img.mat.reg):1,], key=NULL, main=paste0("Q after reg: ", Q.img.info.vec[2]) )
+    plot(K.mean.img.chk[nrow(K.mean.img.chk):1,,1], key=NULL, main=paste0("K (mean): ", K.set.fnames[a.K.set.num]))
+    par(mfrow=c(1,1))
+  }
 
   load(file = paste0(path.to.fp.fits, K.set.fnames[a.K.set.num], "_fit_info.RData") ) # Load parameters and logZ for the K
   plr.vec <- prob.pattern(pattern.mat=Q.img.mat.reg, fit.obj$fit, logZ)

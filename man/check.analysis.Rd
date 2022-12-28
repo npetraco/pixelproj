@@ -14,6 +14,8 @@ check.analysis(
   reg.fill.typ = "255",
   path.to.fp.images,
   path.to.fp.fits,
+  printQ = F,
+  plotQ = F,
   plot.level = 0
 )
 }
