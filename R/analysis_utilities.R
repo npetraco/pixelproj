@@ -1,4 +1,4 @@
-#' Analyze probs of feathing patters on each feathering pattern set
+#' Analyze probs of feathering patters on each feathering pattern set
 #' XXXX
 #'
 #' @param XX The XX
@@ -6,7 +6,7 @@
 #'
 #'
 #' @export
-match.analysis <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, min.prob=0.001, printQ=F, plotQ=F){
+match.analysis_SAFE <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, min.prob=0.001, printQ=F, plotQ=F){
 
   prob.vec.loc <- as.numeric(prob.vec)
 
@@ -89,6 +89,123 @@ match.analysis <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, min.p
   names(all.match.info) <- c("Q.summary.vec", "match.info")
 
   return(all.match.info)
+}
+
+
+#' Analyze probs of feathering patters on each feathering pattern set
+#' XXXX
+#'
+#' @param XX The XX
+#' @return The function will XX
+#'
+#'
+#' @export
+match.analysis <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, min.prob=0.001, printQ=F, plotQ=F){
+
+  prob.vec.loc <- as.numeric(prob.vec) # Make sure this is a vector and not a data.frame or something else. Was having some type problems....
+
+  # Best match:
+  pr.best.match  <- max(prob.vec.loc)                    # Probability for the best match. May not be the true ID
+  best.match.idx <- which(prob.vec.loc == pr.best.match) # There can be more than one....
+
+  # True ID:
+  true.lbl   <- as.numeric(an.fp.info.mat[an.idx, 3]) # Numeric label and index for the true ID
+  true.ID    <- an.lbl.names[ true.lbl ]              # string for the true ID
+  pr.true.ID <- prob.vec.loc[true.lbl]                # probability for the true ID
+
+  # Examine all probs greater than the specified minimum
+  abv.min.prob.idxs <- which(prob.vec.loc >= min.prob)
+
+  # "wrongs": Examine all probs greater than or equal to pr.true.ID
+  wrongs.idxs <- which(prob.vec.loc >= pr.true.ID)
+  wrongs.idxs <- wrongs.idxs[-which(wrongs.idxs == true.lbl)]
+
+  # Lump all check index categories together
+  check.idxs <- sort(unique(c(abv.min.prob.idxs, true.lbl, wrongs.idxs)))
+  prob.chk   <- prob.vec.loc[check.idxs]
+
+  # Label the true match (M) and the rest non-match (NM)
+  tr.idx.chk           <- which(an.lbl.names[check.idxs] == true.ID) # Pull out true match or label it
+  ID.indcs             <- rep("NM", length(check.idxs))
+  ID.indcs[tr.idx.chk] <- "M****"
+
+  # Indicate whether or not Pr(X|K) equals or exceeds pr.true.ID, i.e. Pr(X|K) >= Pr(X|K-true)?
+  wrong.indcs                                       <- rep(FALSE, length(check.idxs))
+  wrong.indcs[which((prob.chk >= pr.true.ID) == T)] <- TRUE
+  wrong.indcs[tr.idx.chk]                           <- NA
+  #print(wrong.indcs)
+
+  # Logical indicator if Pr(X|K) is best match. Ideally, best match is the highest
+  # prob (by far), and is unique.
+  best.matchQ <- (prob.chk == pr.best.match)
+
+  # Compute LRs for each prob above the specified minimum
+  LRs <- array(NA, length(check.idxs))
+  for(i in 1:length(check.idxs)) {
+
+    numerator   <- as.numeric(prob.vec.loc[check.idxs[i]])                                         # Pr(X|K)
+    denominator <- sum( as.numeric(prob.vec.loc[-check.idxs[i]]) * 1/ (length(an.lbl.names) - 1) ) # Pr(X)
+    LR          <- numerator / denominator                                                     # Pr(X|K)/Pr(X)
+    LRs[i]      <- LR
+
+  }
+  LRs <- as.numeric(LRs) # In case was type converted....
+
+  # Match info data frame:
+  match.info <- data.frame(
+    check.idxs,
+    an.lbl.names[check.idxs],
+    prob.chk,
+    LRs,
+    best.matchQ,
+    ID.indcs,
+    wrong.indcs
+  )
+  colnames(match.info) <- c("K", "ID-K", "Pr(X|K)", "LR", "best.matchQ", "indicator", "pr.geq.MQ")
+
+  # Also return M**** vector with best.matchQ==trueID, number of best match and number >= min.prob
+  mtvec <- data.frame(
+    match.info[tr.idx.chk, 1:6],             # "K", "ID-K", "Pr(X|K)", "LR", "best.matchQ", "indicator"
+    sum(match.info[, 7], na.rm=T),           # "num.pr.geq.M"
+    as.logical(pr.true.ID == pr.best.match), # "correctIDQ"
+    length(best.match.idx),                  # "num.best"
+    nrow(match.info))                        # "num.abv.min.prob"
+  colnames(mtvec) <- c("K", "ID-K", "Pr(X|K)", "LR", "best.matchQ", "indicator",
+                       "num.pr.geq.M",
+                       "correctIDQ",
+                       "num.best",
+                       "num.abv.min.prob")
+  #print(mtvec)
+
+  # Plot Pr(X|K) for all K
+  if(plotQ == T) {
+    plot(1:length(an.lbl.names), prob.vec.loc, typ="h", xlab="K", ylab="probability", main="Pr(X|K)")
+    points(true.lbl, pr.true.ID, pch=4) # Mark the correct ID with an x
+  }
+
+  if(printQ == T){
+    print(paste0("FP#:                                    ", an.idx ))
+    print(paste0("K:                                      ", mtvec[1] ))
+    #print(paste0("indicator:                              ", mtvec[6] )) # Should always just be M**** indicating this K is the true match
+    print(paste0("true ID of K:                           ", mtvec[2] ))
+    print(paste0("best match? [Pr(X|K)    == max(prob)]:  ", mtvec[5] ))
+    print(paste0("correct ID? (best match == correct ID): ", mtvec[7] ))
+    print(paste0("#K best match:                          ", mtvec[8] ))
+    print(paste0("min.prob:                               ", min.prob ))
+    print(paste0("#K geq min.prob:                        ", mtvec[9] ))
+    print(paste0("Pr(X|K):         ", mtvec[3] ))
+    print(paste0("LR:              ", mtvec[4] ))
+  }
+
+  all.match.info <- list(
+    mtvec,
+    match.info
+  )
+  names(all.match.info) <- c("Q.summary.vec", "match.info")
+
+  return(all.match.info)
+
+
 }
 
 
@@ -214,5 +331,18 @@ check.analysis <- function(a.Q.img.num, a.K.set.num, K.set.fnames, an.fp.info.ma
   )
 
   return(check.info.list)
+
+}
+
+
+#' XXXX
+#' XXXX
+#'
+#' @param XX The XX
+#' @return The function will XX
+#'
+#'
+#' @export
+nonmatch.analysis <- function(an.idx, prob.vec, an.fp.info.mat, an.lbl.names, printQ=F){
 
 }

@@ -16,5 +16,5 @@ License: ISC License
     OR PERFORMANCE OF THIS SOFTWARE.
 Encoding: UTF-8
 LazyData: true
-Depends: Rvision (>= 0.1.0), magick (>= 2.7.3), CRF (>= 0.3-16), gRbase (>= 1.8-3), RBGL (>= 1.46.0), igraph (>= 1.0.1), Rgraphviz (>= 2.38.0), plot.matrix (>= 1.6)
+Depends: Rvision (>= 0.1.0), magick (>= 2.7.3), CRF (>= 0.3-16), gRbase (>= 1.8-3), RBGL (>= 1.46.0), igraph (>= 1.0.1), Rgraphviz (>= 2.38.0), plot.matrix (>= 1.6), splancs (>= 2.01-43)
 RoxygenNote: 7.2.2
